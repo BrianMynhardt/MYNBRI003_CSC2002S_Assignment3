@@ -1,4 +1,4 @@
-import java.io.File;
+/*import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -38,7 +38,7 @@ public class Map {
             //Populate tree list.
             for(int i = 0; i<TreeCount;i++){
                 tempArr = input.nextLine().split(" ");
-                trees.add(new Tree(Integer.parseInt(tempArr[0]),Integer.parseInt(tempArr[1]),Integer.parseInt(tempArr[2])));
+                trees.add(new Tree(Integer.parseInt(tempArr[1]),Integer.parseInt(tempArr[0]),Integer.parseInt(tempArr[2])));
 
             }
 
@@ -60,18 +60,15 @@ public class Map {
     }
 
     public void sumVals(){
+        int extent;
 
         for(Tree a:trees){
+            extent = a.getExtent();
             tempsum=0;
             if (a.fits(X_SIZE,Y_SIZE)){
-                for(int i=a.getX();i<a.getX()+a.getExtent(); i++){
-                    for(int j=a.getY();j<a.getY()+a.getExtent();j++){
-                        try {
-                            tempsum += sunValues[j* Y_SIZE + i];
-                        }catch(ArrayIndexOutOfBoundsException e){
-
-
-                        }
+                for(int i=a.getY();i<a.getY()+extent; i++){
+                    for(int j=a.getX();j<a.getX()+extent;j++){
+                        tempsum += sunValues[(i)*(Y_SIZE) + j];
 
                     }
                 }
@@ -94,4 +91,4 @@ public class Map {
 
     }
 
-}
+}*/
