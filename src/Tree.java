@@ -33,7 +33,15 @@ public class Tree {
         return y;
     }
 
-    public float getSunlight() {
+    public float getSunlight(float [][] sunVals, int xSize, int ySize){
+        sunlight = 0;
+        for(int i=y; i < y+extent; i++){
+            for(int j=x; j < x+extent; j++){
+                if(j < xSize && i < ySize){
+                    sunlight += sunVals[i][j];
+                }
+            }
+        }
         return sunlight;
     }
     public void setSunlight(float sunVal){

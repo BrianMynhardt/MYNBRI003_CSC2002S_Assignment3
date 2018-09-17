@@ -10,36 +10,39 @@ public class ParallelTrees {
     private static int X_SIZE;
     private static int Y_SIZE;
     private int TreeCount;
-    static float[] sunValues;
+    static float[][] sunValues;
     float totalSun = 0;
     static long startTime = 0;
 
-    Tree[] trees;
+    ArrayList<Tree> trees = new ArrayList<>();
 
-    public ParallelTrees(String fName){
+    public ParallelTrees(String inName){
         try{
             //Get First 2 lines of input for gridsize then work out size of values Array
-            Scanner input = new Scanner(new File(fName));
+            Scanner input = new Scanner(new File(inName));
             String[] tempArr = input.nextLine().split(" ");
-            this.X_SIZE = Integer.parseInt(tempArr[0]);
-            this.Y_SIZE = Integer.parseInt(tempArr[1]);
-            sunValues = new float[Y_SIZE*X_SIZE];
+            this.X_SIZE = Integer.parseInt(tempArr[1]);
+            this.Y_SIZE = Integer.parseInt(tempArr[0]);
+
 
             //Populate Float array
-            int counter =0;
+            System.gc();
+            sunValues = new float[Y_SIZE][X_SIZE];
             Scanner floats = new Scanner(input.nextLine());
-            while(floats.hasNextFloat()){
-                sunValues[counter++] = floats.nextFloat();
+            for(int y = 0; y < Y_SIZE; y++){
+                for(int x=0; x < X_SIZE; x++){
+                    sunValues[y][x] = floats.nextFloat();
+                }
             }
             floats.close();
+            System.gc();
 
             //Get Tree count
-            TreeCount = Integer.parseInt(input.nextLine());
-            trees = new Tree[TreeCount];
+            TreeCount = Integer.parseInt(input.nextLine());;
             //Populate tree list.
             for(int i = 0; i<TreeCount;i++){
                 tempArr = input.nextLine().split(" ");
-                trees[i] = new Tree(Integer.parseInt(tempArr[1]),Integer.parseInt(tempArr[0]),Integer.parseInt(tempArr[2]));
+                trees.add(new Tree(Integer.parseInt(tempArr[1]),Integer.parseInt(tempArr[0]),Integer.parseInt(tempArr[2])));
                 //System.out.println(trees.get(i).getX());
             }
 
@@ -60,8 +63,8 @@ public class ParallelTrees {
         //}
     }
     static final ForkJoinPool fjPool = new ForkJoinPool();
-    static float sum(Tree[] arr){
-        return fjPool.invoke(new SumArray(arr,0,arr.length,X_SIZE,Y_SIZE,sunValues));
+    static float sum(ArrayList<Tree> arr){
+        return fjPool.invoke(new SumArray(arr,0,arr.size(),X_SIZE,Y_SIZE,sunValues));
     }
     private static void tick(){
         startTime = System.currentTimeMillis();
@@ -78,7 +81,7 @@ public class ParallelTrees {
         return Y_SIZE;
     }
 
-    public float[] getSunValues() {
+    public float[][] getSunValues() {
         return sunValues;
     }
 }

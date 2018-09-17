@@ -9,28 +9,32 @@ public class SequentialTrees {
     private int X_SIZE;
     private int Y_SIZE;
     private int TreeCount;
-    float[] sunValues;
-    float totalSun = 0;
+    float[][] sunValues;
+    float totalSun;
     float tempsum;
 
     List<Tree> trees = new ArrayList<Tree>();
 
-    public SequentialTrees(String fName){
+    public SequentialTrees(String inName){
+        totalSun = 0;
         try{
             //Get First 2 lines of input for gridsize then work out size of values Array
-            Scanner input = new Scanner(new File(fName));
+            Scanner input = new Scanner(new File(inName));
             String[] tempArr = input.nextLine().split(" ");
             this.X_SIZE = Integer.parseInt(tempArr[0]);
             this.Y_SIZE = Integer.parseInt(tempArr[1]);
-            sunValues = new float[Y_SIZE*X_SIZE];
 
             //Populate Float array
-            int counter =0;
+            System.gc();
+            sunValues = new float[Y_SIZE][X_SIZE];
             Scanner floats = new Scanner(input.nextLine());
-            while(floats.hasNextFloat()){
-                sunValues[counter++] = floats.nextFloat();
+            for(int y = 0; y < Y_SIZE; y++){
+                for(int x=0; x < X_SIZE; x++){
+                    sunValues[y][x] = floats.nextFloat();
+                }
             }
             floats.close();
+            System.gc();
 
             //Get Tree count
             TreeCount = Integer.parseInt(input.nextLine());
@@ -67,34 +71,9 @@ public class SequentialTrees {
     }
 
     public void sumVals(){
-        int extent;
-
-        for(Tree a:trees){
-            extent = a.getExtent();
-            tempsum=0;
-            if (a.fits(X_SIZE,Y_SIZE)){
-                for(int i=a.getY();i<a.getY()+extent; i++){
-                    for(int j=a.getX();j<a.getX()+extent;j++){
-                        tempsum += sunValues[(i)*(Y_SIZE) + j];
-
-                    }
-                }
-                a.setSunlight(tempsum);
-            }else{
-                for( int j=a.getY();j<a.getY()+extent;j++ ){
-                    for( int i=a.getX();i<a.getX()+extent; i++){
-                        if(i< X_SIZE && j<Y_SIZE){
-                            tempsum+= sunValues[j*Y_SIZE+i];
-
-                        }
-                    }
-                }
-                a.setSunlight(tempsum);
-
-            }
-            totalSun += tempsum;
+        for(Tree a:trees) {
+            totalSun+=a.getSunlight(sunValues,X_SIZE,Y_SIZE);
 
         }
-
     }
 }
