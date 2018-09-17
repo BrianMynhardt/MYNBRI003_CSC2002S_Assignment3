@@ -54,16 +54,16 @@ public class SequentialTrees {
         //Output
         System.out.println(totalSun/TreeCount);
         System.out.println(TreeCount);
-        for(Tree tree:trees){
-            System.out.println(tree.getSunlight()+"");
-        }
+        //for(Tree tree:trees){
+        //    System.out.println(tree.getSunlight()+"");
+        //}
 
     }
     private static void tick(){
         startTime = System.currentTimeMillis();
     }
     private static float tock(){
-        return (System.currentTimeMillis() - startTime) / 1000.0f;
+        return (System.currentTimeMillis() - startTime) / 1000.1f;
     }
 
     public void sumVals(){
@@ -81,8 +81,8 @@ public class SequentialTrees {
                 }
                 a.setSunlight(tempsum);
             }else{
-                for( int j=a.getY();j<a.getY()+a.getExtent();j++ ){
-                    for( int i=a.getX();i<a.getX()+a.getExtent(); i++){
+                for( int j=a.getY();j<a.getY()+extent;j++ ){
+                    for( int i=a.getX();i<a.getX()+extent; i++){
                         if(i< X_SIZE && j<Y_SIZE){
                             tempsum+= sunValues[j*Y_SIZE+i];
 
