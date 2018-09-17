@@ -1,4 +1,6 @@
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -13,10 +15,15 @@ public class ParallelTrees {
     static float[][] sunValues;
     float totalSun = 0;
     static long startTime = 0;
+    public int counter=0;
+    public String out;
+    static int cutOff;
 
     ArrayList<Tree> trees = new ArrayList<>();
 
-    public ParallelTrees(String inName){
+    public ParallelTrees(String inName,String outName,int cut){
+        this.out = outName;
+        this.cutOff = cut;
         try{
             //Get First 2 lines of input for gridsize then work out size of values Array
             Scanner input = new Scanner(new File(inName));
@@ -28,13 +35,14 @@ public class ParallelTrees {
             //Populate Float array
             System.gc();
             sunValues = new float[Y_SIZE][X_SIZE];
-            Scanner floats = new Scanner(input.nextLine());
-            for(int y = 0; y < Y_SIZE; y++){
-                for(int x=0; x < X_SIZE; x++){
-                    sunValues[y][x] = floats.nextFloat();
+            String floats =input.nextLine();
+            String[] split = floats.split(" ");
+            for(int y = 0; y < Y_SIZE; y++) {
+                for (int x = 0; x < X_SIZE; x++) {
+                    sunValues[y][x] = Float.parseFloat(split[counter]);
+                    counter++;
                 }
             }
-            floats.close();
             System.gc();
 
             //Get Tree count
@@ -51,20 +59,15 @@ public class ParallelTrees {
         }catch(Exception e){
 
         }
-        tick();//Give trees values
-        totalSun= sum(trees);
+        tick();
+        totalSun=sum(trees);
         float time = tock();
-        System.out.println("Run took "+ time +" seconds");
-        //Output
-        System.out.println(totalSun/TreeCount);
-        System.out.println(TreeCount);
-        //for(Tree tree:trees){
-        //    System.out.println(tree.getSunlight()+"");
-        //}
+        printOut(time);
+
     }
     static final ForkJoinPool fjPool = new ForkJoinPool();
     static float sum(ArrayList<Tree> arr){
-        return fjPool.invoke(new SumArray(arr,0,arr.size(),X_SIZE,Y_SIZE,sunValues));
+        return fjPool.invoke(new SumArray(arr,0,arr.size(),X_SIZE,Y_SIZE,sunValues,cutOff));
     }
     private static void tick(){
         startTime = System.currentTimeMillis();
@@ -83,5 +86,27 @@ public class ParallelTrees {
 
     public float[][] getSunValues() {
         return sunValues;
+    }
+
+    public void printOut(float total){
+        try {//Printing Output
+            File output = new File(out);
+            PrintWriter pw = new PrintWriter(output);
+
+            totalSun = totalSun/ TreeCount;
+            pw.print(totalSun);
+            pw.print(TreeCount);
+
+            for(int i = 0; i < TreeCount; i++){
+                Tree tree = trees.get(i);
+                float sunlight = tree.getSunlight(sunValues, X_SIZE, Y_SIZE);
+                pw.println(sunlight);
+            }
+
+            pw.print("\n" + total);
+            pw.close();
+        }catch(FileNotFoundException e){
+
+        }
     }
 }

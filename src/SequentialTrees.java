@@ -1,4 +1,6 @@
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -11,14 +13,16 @@ public class SequentialTrees {
     private int TreeCount;
     float[][] sunValues;
     float totalSun;
-    float tempsum;
+    public int counter=0;
+    String out;
 
     List<Tree> trees = new ArrayList<Tree>();
 
-    public SequentialTrees(String inName){
+    public SequentialTrees(String inName,String outName){
         totalSun = 0;
+        this.out = outName;
         try{
-            //Get First 2 lines of input for gridsize then work out size of values Array
+            //Get First line of input for gridsize
             Scanner input = new Scanner(new File(inName));
             String[] tempArr = input.nextLine().split(" ");
             this.X_SIZE = Integer.parseInt(tempArr[0]);
@@ -27,13 +31,14 @@ public class SequentialTrees {
             //Populate Float array
             System.gc();
             sunValues = new float[Y_SIZE][X_SIZE];
-            Scanner floats = new Scanner(input.nextLine());
-            for(int y = 0; y < Y_SIZE; y++){
-                for(int x=0; x < X_SIZE; x++){
-                    sunValues[y][x] = floats.nextFloat();
+            String floats =input.nextLine();
+            String[] split = floats.split(" ");
+            for(int y = 0; y < Y_SIZE; y++) {
+                for (int x = 0; x < X_SIZE; x++) {
+                    sunValues[y][x] = Float.parseFloat(split[counter]);
+                    counter++;
                 }
             }
-            floats.close();
             System.gc();
 
             //Get Tree count
@@ -51,16 +56,12 @@ public class SequentialTrees {
         }catch(Exception e){
 
         }
-        tick();//Give trees values
+        tick();
         sumVals();
         float time = tock();
-        System.out.println("Run took "+ time +" seconds");
-        //Output
-        System.out.println(totalSun/TreeCount);
-        System.out.println(TreeCount);
-        //for(Tree tree:trees){
-        //    System.out.println(tree.getSunlight()+"");
-        //}
+        printOut(time);
+
+
 
     }
     private static void tick(){
@@ -73,6 +74,26 @@ public class SequentialTrees {
     public void sumVals(){
         for(Tree a:trees) {
             totalSun+=a.getSunlight(sunValues,X_SIZE,Y_SIZE);
+
+        }
+    }
+
+    public void printOut(float total){
+        try {//Printing Output
+            File output = new File(out);
+            PrintWriter pw = new PrintWriter(output);
+
+            totalSun = totalSun/ TreeCount;
+            pw.print(totalSun);
+            pw.print(TreeCount);
+
+            for (int i = 0; i < TreeCount; i++) {
+                pw.print(trees.get(i).getSun());
+            }
+
+            pw.print("\n" + total);
+            pw.close();
+        }catch(FileNotFoundException e){
 
         }
     }

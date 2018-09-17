@@ -8,17 +8,18 @@ public class SumArray extends RecursiveTask<Float> {
 	int lo; // arguments
 	int hi;
 	ArrayList<Tree> trees;
-	static final int SEQUENTIAL_CUTOFF = 1000;
+	static int SEQUENTIAL_CUTOFF;
 
 	float totalSun = 0; // result
 
-	SumArray(ArrayList<Tree> trees, int l, int h, int xsize, int ysize, float[][] sunvals) {
+	SumArray(ArrayList<Tree> trees, int l, int h, int xsize, int ysize, float[][] sunvals,int cutOff) {
 		this.lo = l;
 		this.hi = h;
 		this.trees = trees;
 		this.X_SIZE = xsize;
 		this.Y_SIZE = ysize;
 		this.sunValues = sunvals;
+		this.SEQUENTIAL_CUTOFF=cutOff;
 		totalSun = 0;
 	}
 
@@ -32,8 +33,8 @@ public class SumArray extends RecursiveTask<Float> {
 			}
 			return totalSun;
 		} else {
-			SumArray left = new SumArray(trees, lo, (hi + lo) / 2, X_SIZE, Y_SIZE, sunValues);
-			SumArray right = new SumArray(trees, (hi + lo) / 2, hi, X_SIZE, Y_SIZE, sunValues);
+			SumArray left = new SumArray(trees, lo, (hi + lo) / 2, X_SIZE, Y_SIZE, sunValues,SEQUENTIAL_CUTOFF);
+			SumArray right = new SumArray(trees, (hi + lo) / 2, hi, X_SIZE, Y_SIZE, sunValues,SEQUENTIAL_CUTOFF);
 
 			// order of next 4 lines
 			// essential – why?
