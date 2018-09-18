@@ -1,6 +1,4 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,15 +13,18 @@ public class SequentialTrees {
     float totalSun;
     public int counter=0;
     String out;
+    public String outer;
+
 
     List<Tree> trees = new ArrayList<Tree>();
 
     public SequentialTrees(String inName,String outName){
         totalSun = 0;
         this.out = outName;
+        //this.outer = outname2;
         try{
             //Get First line of input for gridsize
-            Scanner input = new Scanner(new File(inName));
+            Scanner input = new Scanner(new File("./inputs/"+inName));
             String[] tempArr = input.nextLine().split(" ");
             this.X_SIZE = Integer.parseInt(tempArr[0]);
             this.Y_SIZE = Integer.parseInt(tempArr[1]);
@@ -56,19 +57,10 @@ public class SequentialTrees {
         }catch(Exception e){
 
         }
-        tick();
         sumVals();
-        float time = tock();
-        printOut(time);
+        printOut();
 
 
-
-    }
-    private static void tick(){
-        startTime = System.currentTimeMillis();
-    }
-    private static float tock(){
-        return (System.currentTimeMillis() - startTime) / 1000.1f;
     }
 
     public void sumVals(){
@@ -78,9 +70,10 @@ public class SequentialTrees {
         }
     }
 
-    public void printOut(float total){
+    public void printOut(){
         try {//Printing Output
-            File output = new File(out);
+
+            File output = new File("./outputs/"+out);
             PrintWriter pw = new PrintWriter(output);
 
             totalSun = totalSun/ TreeCount;
@@ -90,10 +83,8 @@ public class SequentialTrees {
             for (int i = 0; i < TreeCount; i++) {
                 pw.print(trees.get(i).getSun());
             }
-
-            pw.print("\n" + total);
             pw.close();
-        }catch(FileNotFoundException e){
+        }catch(Exception e){
 
         }
     }

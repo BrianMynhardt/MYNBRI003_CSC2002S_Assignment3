@@ -1,6 +1,6 @@
 # MakeFile
 # Brian Mynhardt
-# 26 February 2018
+
 
 JAVAC=/usr/bin/javac
 .SUFFIXES: .java .class
@@ -11,8 +11,8 @@ BINDIR=bin
 $(BINDIR)/%.class:$(SRCDIR)/%.java
 	$(JAVAC) -d $(BINDIR)/ -cp $(BINDIR) $<
 
-CLASSES= H_node.class H_map.class \
-	 HashAssignment.class insertOPcount.class getOPcount.class
+CLASSES= Tree.class LauncherParallel.class LauncherSequential.class \
+	  Sequentialtrees.class ParallelTrees.class SumArray.class 
 	 
 CLASS_FILES=$(CLASSES:%.class=$(BINDIR)/%.class)
 
@@ -21,11 +21,9 @@ default: $(CLASS_FILES)
 clean:
 	rm $(BINDIR)/*.class
 
-run1:
-	java -cp bin HashAssignment
-run2:
-	java -cp bin insertOPcount > results/insertCounts.txt
-run3:
-	java -cp bin getOPcount > results/getCounts.txt
+runSequential:
+	java -cp bin LauncherSequential 600_input.txt SequentialOutput.txt
+runParallel:
+	java -cp bin LauncherParallel 600_input.txt ParallelOutput.txt
 runDocuments:
 	javadoc ./src/*.java -d ./docs

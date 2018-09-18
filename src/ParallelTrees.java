@@ -1,6 +1,4 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -17,16 +15,18 @@ public class ParallelTrees {
     static long startTime = 0;
     public int counter=0;
     public String out;
+    public String outer;
     static int cutOff;
 
     ArrayList<Tree> trees = new ArrayList<>();
 
     public ParallelTrees(String inName,String outName,int cut){
         this.out = outName;
+        //this.outer = outname2;
         this.cutOff = cut;
         try{
             //Get First 2 lines of input for gridsize then work out size of values Array
-            Scanner input = new Scanner(new File(inName));
+            Scanner input = new Scanner(new File("./inputs/"+inName));
             String[] tempArr = input.nextLine().split(" ");
             this.X_SIZE = Integer.parseInt(tempArr[1]);
             this.Y_SIZE = Integer.parseInt(tempArr[0]);
@@ -59,21 +59,13 @@ public class ParallelTrees {
         }catch(Exception e){
 
         }
-        tick();
-        totalSun=sum(trees);
-        float time = tock();
-        printOut(time);
+            totalSun = sum(trees);
+            printOut();
+        }
 
-    }
     static final ForkJoinPool fjPool = new ForkJoinPool();
     static float sum(ArrayList<Tree> arr){
         return fjPool.invoke(new SumArray(arr,0,arr.size(),X_SIZE,Y_SIZE,sunValues,cutOff));
-    }
-    private static void tick(){
-        startTime = System.currentTimeMillis();
-    }
-    private static float tock(){
-        return (System.currentTimeMillis() - startTime) / 1000.1f;
     }
 
     public int getX_SIZE() {
@@ -88,24 +80,25 @@ public class ParallelTrees {
         return sunValues;
     }
 
-    public void printOut(float total){
+    public void printOut(){
         try {//Printing Output
-            File output = new File(out);
-            PrintWriter pw = new PrintWriter(output);
+            FileWriter fw = new FileWriter("./outputs/"+out);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter output = new PrintWriter(bw);
+
 
             totalSun = totalSun/ TreeCount;
-            pw.print(totalSun);
-            pw.print(TreeCount);
+            output.print(totalSun);
+            output.print(TreeCount);
 
             for(int i = 0; i < TreeCount; i++){
                 Tree tree = trees.get(i);
                 float sunlight = tree.getSunlight(sunValues, X_SIZE, Y_SIZE);
-                pw.println(sunlight);
+                output.print(sunlight);
             }
+            output.close();
 
-            pw.print("\n" + total);
-            pw.close();
-        }catch(FileNotFoundException e){
+        }catch(Exception e){
 
         }
     }
